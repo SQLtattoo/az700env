@@ -1,0 +1,18 @@
+# SSH Public Key Placeholder
+# ============================================================
+# The actual az700demos / az700demos.pub key pair is gitignored
+# and must be generated locally before deploying.
+#
+# To generate your own key pair:
+#
+#   ssh-keygen -t rsa -b 4096 -f az700demos -C "az700-demo"
+#
+# This produces:
+#   az700demos      <- private key (NEVER commit this)
+#   az700demos.pub  <- public key  (NEVER commit this)
+#
+# The public key value is used in main.parameters.json:
+#   "nvaSshPublicKey": "<paste contents of az700demos.pub here>"
+#
+# Only required when deployRouteServer = true.
+# ============================================================

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hubLocation":          { "value": "uksouth" },
+    "spoke1Location":       { "value": "uksouth" },
+    "spoke2Location":       { "value": "northeurope" },
+    "workloadLocation":     { "value": "uksouth" },
+    "adminUsername":        { "value": "azadmin" },
+    "vmSize":               { "value": "Standard_D2s_v3" },
+    "nvaSshPublicKey":      { "value": "" },
+    "adminObjectId":        { "value": "REPLACE_WITH_YOUR_OBJECT_ID" },
+    "p2sRootCertData":      { "value": "REPLACE_WITH_BASE64_ROOT_CERT_PUBLIC_KEY" },
+    "p2sRootCertName":      { "value": "P2SRootCert" },
+    "vpnClientAddressPool": { "value": "172.16.201.0/24" },
+    "publicDnsZoneBase":    { "value": "contoso.com" },
+    "privateDnsZoneBase":   { "value": "contoso.local" },
+    "vaultName":            { "value": "contoso-rsv" },
+    "storageAccountPrefix": { "value": "staz700" },
+
+    "deployBastion":          { "value": false },
+    "deployVpnGateway":       { "value": false },
+    "deployExpressRoute":     { "value": false },
+    "deployFirewall":         { "value": true  },
+    "deployNatGateway":       { "value": true  },
+    "deployTrafficManager":   { "value": false },
+    "deployKeyVault":         { "value": true  },
+    "deployRouteServer":      { "value": false },
+    "deployAVNM":             { "value": true  },
+    "deployNetworkMonitoring":{ "value": true  },
+    "enableP2S":              { "value": false },
+    "enableCmkForStorage":    { "value": false }
+  }
+}

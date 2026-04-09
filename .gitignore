@@ -1,0 +1,51 @@
+# Azure Developer CLI
+.azure/
+
+# Environment variables and config with secrets
+.env
+.env.local
+# Contains SSH keys and certificates - use azure.yaml.template instead
+azure.yaml
+
+# Certificates and Keys - NEVER commit these!
+*.pfx
+*.cer
+*.pem
+*.key
+*.pub
+certs/
+*.crt
+*.p12
+
+int/
+backup/
+
+# SSH Keys
+id_rsa
+id_rsa.pub
+az700demos
+az700demos.pub
+
+# Azure secrets
+*.publishsettings
+
+# Build outputs
+bin/
+obj/
+out/
+infra/main.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+TODO.mdint/README-FULL-BACKUP.md

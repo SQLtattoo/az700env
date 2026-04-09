@@ -1,0 +1,70 @@
+name: tdd-azd-az700allinone 
+metadata:
+  template:  tdd-azd-az700allinone@0.0.1-beta
+infra:
+  provider: bicep   # (default; you can omit this line)
+  path: infra       # relative path to all your .bicep files
+  module: main      # the single entry-point .bicep file
+  parameters:
+    # Define your locations consistently
+    hubLocation: "uksouth"
+    spoke1Location: "uksouth"
+    spoke2Location: "northeurope" 
+    workloadLocation: "uksouth" 
+    # Add admin credentials
+    adminUsername: "azadmin"
+    # Feature toggles for expensive/slow resources
+    deployBastion: true
+    deployVpnGateway: true         # ~30 min deploy
+    deployExpressRoute: true       # ~45 min deploy, demo only (no real circuit)
+    deployFirewall:   true           # ~10 min deploy, ~$900/month
+    deployNatGateway: true         # ~2 min deploy
+    deployTrafficManager: true     # ~3 min deploy, uses VM load balancers
+    deployKeyVault: true
+    deployAVNM: true              # ~3 min deploy, Network Manager with demo VNets
+    deployRouteServer: true       # ~15 min deploy, BGP dynamic routing with NVA
+    nvaSshPublicKey: "REPLACE_WITH_YOUR_SSH_PUBLIC_KEY"  # Required if deployRouteServer=true - Run: cat ~/.ssh/id_rsa.pub
+    
+    # Point-to-Site VPN parameters
+    enableP2S: false               # Enable P2S VPN on VPN Gateway
+    vpnClientAddressPool: "172.16.201.0/24"  # P2S client address pool
+    p2sRootCertData: "REPLACE_WITH_YOUR_BASE64_CERT_DATA"  # Base64 root cert public key - Run: scripts/Generate-P2SCerts.ps1
+    p2sRootCertName: "P2SRootCert" # Root certificate name
+
+    # DNS and naming parameters
+    publicDnsZoneBase: "contoso.com"
+    privateDnsZoneBase: "contoso.local"
+    vaultName: "contoso-rsv"
+    storageAccountPrefix: "staz700"
+    adminObjectId: "" #use: az ad signed-in-user show --query id -o tsv    
+    # Monitoring and Analytics
+    deployNetworkMonitoring: true  # Enables NSG Flow Logs with Traffic Analytics
+
+# Hooks - Run scripts after deployment
+hooks:
+  postprovision:
+    windows:
+      shell: pwsh
+      run: |
+        Write-Host "Configuring VNet Flow Logs with Traffic Analytics..." -ForegroundColor Cyan
+        # Get environment name and derive resource group
+        $envName = (azd env get-values | Select-String "AZURE_ENV_NAME" | ForEach-Object { $_.Line -replace "AZURE_ENV_NAME=", "" -replace '"', '' })
+        if ([string]::IsNullOrEmpty($envName)) {
+          $envName = (azd env list --output json | ConvertFrom-Json | Where-Object { $_.IsDefault }).Name
+        }
+        $rgName = "rg-$envName"
+        Write-Host "Resource Group: $rgName" -ForegroundColor Cyan
+        .\scripts\Enable-FlowLogs.ps1 -ResourceGroupName $rgName
+      continueOnError: true
+    posix:
+      shell: sh
+      run: |
+        echo "Configuring VNet Flow Logs with Traffic Analytics..."
+        envName=$(azd env get-values | grep AZURE_ENV_NAME | cut -d'=' -f2 | tr -d '"')
+        if [ -z "$envName" ]; then
+          envName=$(azd env list --output json | jq -r '.[] | select(.IsDefault) | .Name')
+        fi
+        rgName="rg-$envName"
+        echo "Resource Group: $rgName"
+        pwsh -File ./scripts/Enable-FlowLogs.ps1 -ResourceGroupName "$rgName"
+      continueOnError: true
