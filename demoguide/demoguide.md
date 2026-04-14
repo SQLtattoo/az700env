@@ -27,7 +27,7 @@
    git clone https://github.com/SQLtattoo/az700env.git
    cd az700env
    
-   # Get your Azure AD Object ID for Key Vault access
+   # Get your Azure AD Object ID for Key Vault deployment (if deploying Key Vault)
    $objectId = az ad signed-in-user show --query id -o tsv
    
    # Edit azure.yaml and set adminObjectId

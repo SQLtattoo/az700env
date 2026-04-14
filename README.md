@@ -64,15 +64,25 @@ cd az700env
 Before deploying, edit `infra/main.parameters.json` to set your feature toggles, then:
 
 ```powershell
-# Deploy — azd will prompt interactively for the VM admin password
+# Deploy — azd will prompt interactively for required parameters
 azd up
 ```
+
+**During `azd up` you will be prompted for:**
+
+| Prompt | Purpose | Example |
+|--------|---------|---------|
+| `hubLocation` | Primary region — used for hub, spoke1, and workload VNets | `uksouth` |
+| `spoke2Location` | Cross-region spoke — **must be different from hub** to demonstrate multi-region routing | `northeurope` |
+| `adminPassword` | VM administrator password | *(secure input)* |
+
+> The separate `spoke2Location` prompt is intentional — deploying spoke2 in a different region is a core AZ-700 demo scenario (cross-region VNet peering, Traffic Manager geo-routing, latency-based routing).
 
 #### **💰 Deployment Profiles** (edit `infra/main.parameters.json`)
 
 | Profile | Daily Cost | What to set to `false` |
 |---------|-----------|------------------------|
-| 🌱 Minimal | ~$25/day | `deployFirewall`, `deployBastion`, `deployRouteServer`, `deployVpnGateway`, `deployExpressRoute` |
+| 🌱 Minimal | ~$25/day | `deployKeyVault`, `deployFirewall`, `deployBastion`, `deployRouteServer`, `deployVpnGateway`, `deployExpressRoute` |
 | 🌿 Essential | ~$50/day | `deployFirewall`, `deployBastion` |
 | 🌳 Full | ~$109/day | Nothing — deploy everything |
 

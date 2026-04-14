@@ -6,8 +6,8 @@ param hubLocation string = 'ukSouth'
 @description('Location for spoke1 vnet resources')
 param spoke1Location string = 'ukSouth'
 
-@description('Location for spoke2 vnet resources')
-param spoke2Location string = 'northeurope'
+@description('Location for spoke2 vnet resources (cross-region spoke — enter a different region from hub, e.g. northeurope)')
+param spoke2Location string
 
 @description('Location for workload vnet resources')
 param workloadLocation string = 'uksouth'
